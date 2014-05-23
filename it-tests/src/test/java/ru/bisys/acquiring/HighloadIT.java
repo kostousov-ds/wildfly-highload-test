@@ -33,14 +33,15 @@ public class HighloadIT {
     public static final String BASE_URL = "http://localhost:8080/wh-test/api/one";
 
 
-
     @Test
     public void massivePays() {
 	final TicSessionID ticSessionID = new TicSessionID(SessionIDGenerator.getNewSessionID());
 	final MethodLogger logger = LOG.entering(ticSessionID, "massivePays");
 
 	try {
-	    ExecutorService service = Executors.newFixedThreadPool(POOL_SIZE);
+	    final int poolSize = System.getProperty("labs.pool") != null ? Integer.parseInt(System.getProperty("labs.pool")) : POOL_SIZE;
+	    logger.trace("pool {}", poolSize);
+	    ExecutorService service = Executors.newFixedThreadPool(poolSize);
 
 	    Collection<Callable<Boolean>> tasks = new LinkedList<>();
 	    for (int i = 0; i < TASK_COUNT; i++) {
@@ -48,25 +49,25 @@ public class HighloadIT {
 		    final String sid = SessionIDGenerator.getNewSessionID();
 		    final TicSessionID ticSessionID1 = new TicSessionID(sid);
 		    final List<Two<String, String>> params = new ArrayList<>(10);
-		   	params.addAll(
-		   	    Arrays.asList(
-		   		p("sid", sid),
-		   		p("CURRENCY", "RUR"),
-		   		p("TRTYPE", "1"),
-		   		p("COUNTRY", "RU")
-		   	    )
-		   	);
+		    params.addAll(
+			Arrays.asList(
+			    p("sid", sid),
+			    p("CURRENCY", "RUR"),
+			    p("TRTYPE", "1"),
+			    p("COUNTRY", "RU")
+			)
+		    );
 
-		   	final long timeBefore = System.currentTimeMillis();
-		    String reply= null;
+		    final long timeBefore = System.currentTimeMillis();
+		    String reply = null;
 		    try {
-			    reply = NetUtils.post(200, BASE_URL, ticSessionID1, params);
-			    logger.trace("reply {}", reply);
-			} catch (HttpInteractionException e) {
-		   	    logger.error("", e);
-		   	}
-		   	final long timeAfter = System.currentTimeMillis();
-		   	logger.trace("reply {}, time: {}", reply, timeAfter - timeBefore);
+			reply = NetUtils.post(200, BASE_URL, ticSessionID1, params);
+			logger.trace("reply {}", reply);
+		    } catch (HttpInteractionException e) {
+			logger.error("", e);
+		    }
+		    final long timeAfter = System.currentTimeMillis();
+		    logger.trace("reply {}, time: {}", reply, timeAfter - timeBefore);
 		    return sid.equals(reply);
 		});
 	    }
@@ -81,12 +82,11 @@ public class HighloadIT {
 	    long stopMillis = System.currentTimeMillis();
 	    long time = (stopMillis - startMillis);
 	    final Set<Try<Boolean>> done = results.stream().filter(Future::isDone).<Try<Boolean>>map(r -> Try.of(r::get)).filter(Try::isSuccess).collect(Collectors.toSet());
-	    logger.trace("stopped tasks {}", done.size());
 
 	    final long success = done.stream().filter(Try::get).count();
 	    final long fail = done.stream().filter(t -> !t.get()).count();
 	    logger.info("tasks {}, success {}, fail {}, time {}, speed {}", TASK_COUNT, success, fail, time, TASK_COUNT * 1000 / time);
-	    logger.info("poll size {}", POOL_SIZE);
+	    logger.info("poll size {}", poolSize);
 	    if (success != TASK_COUNT) {
 		fail("expected " + TASK_COUNT + " success tasks, received " + success);
 	    }
