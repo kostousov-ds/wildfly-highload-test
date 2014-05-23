@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+    <groupId>net.kst-d.labs.wildfly-highload</groupId>
+    <artifactId>wh-root</artifactId>
+    <version>0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>wh-ear</artifactId>
+    <packaging>ear</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>wh-server</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <version>7</version>
+                    <applicationName>${project.artifactId}</applicationName>
+                    <generateApplicationXml>true</generateApplicationXml>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <applicationName>${project.artifactId}</applicationName>
+                    <!--<includeLibInApplicationXml>true</includeLibInApplicationXml>-->
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                    <modules>
+                        <webModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>wh-server</artifactId>
+                            <contextRoot>${application.web.uri}</contextRoot>
+                        </webModule>
+                        <webModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>demo</artifactId>
+                            <contextRoot>${demo.web.uri}</contextRoot>
+                        </webModule>
+<!--
+                        <webModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>card-server-admin</artifactId>
+                            <contextRoot>${csadmin.web.uri}</contextRoot>
+                        </webModule>
+-->
+                        <webModule>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>emulator</artifactId>
+                            <contextRoot>${emulator.web.uri}</contextRoot>
+                        </webModule>
+                        <!--
+                                                <webModule>
+                                                    <groupId>${project.groupId}</groupId>
+                                                    <artifactId>web-ui</artifactId>
+                                                    <contextRoot>${config.web.uri}</contextRoot>
+                                                </webModule>
+                        -->
+                        <ejbModule>
+                            <groupId>${project.parent.groupId}</groupId>
+                            <artifactId>labs</artifactId>
+                        </ejbModule>
+                        <ejbModule>
+                            <groupId>${project.parent.groupId}</groupId>
+                            <artifactId>gate-common</artifactId>
+                        </ejbModule>
+                    </modules>
+                </configuration>
+
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

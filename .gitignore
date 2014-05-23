@@ -1,0 +1,21 @@
+#common
+target/
+out/
+classes/
+syntax:glob
+*.swp
+git.properties
+
+#IDEA Project Files
+*iml
+*iws
+.idea
+*ipr
+ishopdb
+*.log
+
+# Eclipse Project Files
+.settings/
+.gwt/
+.project
+.classpath
