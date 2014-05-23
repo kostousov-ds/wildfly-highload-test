@@ -9,8 +9,12 @@
 
     <artifactId>it-tests</artifactId>
 
-    <dependencies>
+    <properties>
+        <!--<wildfly.version>8.1.0.CR2</wildfly.version>-->
+        <wildfly.version>8.0.0.Final</wildfly.version>
+    </properties>
 
+    <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -90,33 +94,40 @@
                             <dependency>
                                 <groupId>org.wildfly</groupId>
                                 <artifactId>wildfly-controller-client</artifactId>
-                                <version>8.0.0.Final</version>
+                                <version>${wildfly.version}</version>
                             </dependency>
                         </dependencies>
                         <executions>
                             <execution>
-                                <id>deploy-modules</id>
+                                <id>start-container</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
+                                    <goal>start</goal>
                                     <goal>deploy</goal>
                                 </goals>
                             </execution>
                             <execution>
-                                <id>undeploy-modules</id>
+                                <id>stop-container</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
                                     <goal>undeploy</goal>
+                                    <goal>stop</goal>
                                 </goals>
                             </execution>
                         </executions>
                         <configuration>
                             <container>
                                 <containerId>wildfly8x</containerId>
-                                <type>remote</type>
+                                <artifactInstaller>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-dist</artifactId>
+                                    <version>${wildfly.version}</version>
+                                </artifactInstaller>
+                                <!--<type>remote</type>-->
                             </container>
 
                             <configuration>
-                                <type>runtime</type>
+                                <type>standalone</type>
                                 <properties>
                                     <cargo.hostname>localhost</cargo.hostname>
                                     <cargo.jboss.management-http.port>9990</cargo.jboss.management-http.port>
@@ -124,7 +135,8 @@
                             </configuration>
 
                             <deployer>
-                                <type>remote</type>
+                                <type>installed</type>
+                                <!--<type>remote</type>-->
                             </deployer>
 
                             <deployables>
@@ -133,6 +145,8 @@
                                     <groupId>${project.groupId}</groupId>
                                     <artifactId>wh-ear</artifactId>
                                     <type>ear</type>
+                                    <pingURL>http://localhost:8080/wh-test/index.html</pingURL>
+                                    <pingTimeout>30000</pingTimeout>
                                 </deployable>
                             </deployables>
                         </configuration>
