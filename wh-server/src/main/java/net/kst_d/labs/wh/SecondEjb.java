@@ -22,12 +22,8 @@ public class SecondEjb {
 	final TicSessionID ticSessionID = new TicSessionID(sid == null ? SessionIDGenerator.getNewSessionID() : sid);
 	final MethodLogger logger = LOG.entering(ticSessionID, "doSomething");
 
-
-	String ret = "Something";
-
-
-	logger.exiting(ret);
-	return ret;
+	logger.exiting(sid);
+	return sid;
     }
 
 
