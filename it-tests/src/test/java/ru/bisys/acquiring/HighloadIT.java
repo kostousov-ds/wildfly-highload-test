@@ -23,7 +23,7 @@ import net.kst_d.common.log.MethodLogger;
 import static org.testng.Assert.fail;
 
 public class HighloadIT {
-    public static final int TASK_COUNT = 20;
+    public static final int TASK_COUNT = 50;
     public static final int POOL_SIZE = 16;
     private static final Logger LOG = LoggerFactory.getLogger(HighloadIT.class);
     public static final String BASE_URL = "http://localhost:8080/wh-test/api/one";
