@@ -23,7 +23,7 @@ import net.kst_d.common.log.MethodLogger;
 public class FirstEjb {
     private static final Logger LOG = LoggerFactory.getLogger(FirstEjb.class);
 
-    public static final String URL = "http://localhost:8080/wh-test/two";
+    public static final String URL = "http://localhost:8080/wh-test/api/two";
 
     @POST
     @Path ("/")
