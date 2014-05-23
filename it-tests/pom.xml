@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>wh-common</artifactId>
+            <artifactId>wh-ear</artifactId>
             <version>${project.version}</version>
             <type>ear</type>
         </dependency>
